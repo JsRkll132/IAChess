@@ -2,6 +2,18 @@ import ChessItems
 import random
 
 class ChessStates() : 
+    def isEmpty(self,board,curr_poss,new_poss) :
+        curr_x, curr_y = curr_poss
+        new_x, new_y = new_poss    
+        if curr_x == new_x : 
+            for i in range(min(curr_y,new_y),max(curr_y,new_y)) : 
+                if board[curr_x][i] !='-' and i!=curr_y : 
+                    return False
+        elif curr_y == new_y : 
+            for i in range(min(curr_x,new_x),max(curr_x,new_x)) : 
+                if board[i][curr_y] !='-' and i !=curr_x:
+                    return False
+        return True    
     def isvalidPositition(self,randompieces = []) :
         t_index = [i for i, x in enumerate(randompieces) if x == "Tb"]
         r_index = [i for i, x in enumerate(randompieces) if x == "Rb"]
@@ -78,9 +90,11 @@ class ChessStates() :
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos  
         if curr_x == new_x and new_y!=curr_y :
-            return True
+            if self.isEmpty(board,curr_pos,new_pos) :
+                return True
         elif curr_y == new_y and  new_x!=curr_x :
-            return True 
+            if self.isEmpty(board,curr_pos,new_pos) :
+                return True
         else :
             return False
         pass
@@ -121,6 +135,7 @@ class ChessStates() :
         elif curr_y == new_y and  new_x!=curr_x :
             return True 
         elif (abs(curr_x-new_x)== abs(curr_y-new_y)) :
+            
             return True
         else :
             return False
@@ -134,7 +149,10 @@ class ChessStates() :
         elif (abs(curr_x-new_x)== 1 and  abs(curr_y-new_y) == 1) :
             return True
         else :
-            return False        
+            return False      
+
+                    
+         
     def __init__(self) -> None:
         whitesPieces = self.getPositions()
         blackPieces = [p.replace('b','n') for p in whitesPieces] 
