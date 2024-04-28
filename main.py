@@ -41,10 +41,16 @@ def changePieces (newpos,currpos) :
     draw_board(board)
 
 def verifiedPiece(piece,board,new_pos,curr_pos) : 
+    pType = piece[-1]
     piece = piece[:-1]
     if piece =='P' : 
-        if ChessStates.ChessStates().PbMove(board,curr_pos,new_pos) :
-            return True
+        if pType =='b' : 
+            if ChessStates.ChessStates().PbMove(board,curr_pos,new_pos) :
+                return True
+        elif pType == 'n' : 
+            if ChessStates.ChessStates().PnMove(board,curr_pos,new_pos) :
+                return True
+            
     elif piece == 'RN' :
         if ChessStates.ChessStates().RNmove(board,curr_pos,new_pos):
             return True 

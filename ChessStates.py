@@ -35,7 +35,20 @@ class ChessStates() :
         return False
     def toKill(self, board = [],new_pos = [],curr_pos = []) : 
         pass
-
+    def PnMove(self,board, curr_pos, new_pos):
+        curr_x, curr_y = curr_pos
+        new_x, new_y = new_pos
+            # Verificar si el movimiento es válido
+        if new_y == curr_y and board[new_x][new_y] == '-' and new_x-curr_x == 1:
+            return True  # Movimiento hacia adelante una casilla
+        elif new_y == curr_y and (new_x-curr_x ==2 or new_x- curr_x == 1 )  and curr_x == 1 and board[new_x][new_y] == '-' and board[curr_x + 1][curr_y] == '-':
+            return True  # Movimiento hacia adelante dos casillas en el primer movimiento
+        elif (new_x, new_y) in [(curr_x + 1, curr_y + 1), (curr_x + 1, curr_y - 1)] and board[new_x][new_y][-1] == 'b':
+            return True  # Captura en diagonal
+        else:
+            print("Movimiento no válido para el peón negro.")
+            return False    
+        pass
     def PbMove(self,board, curr_pos, new_pos):
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos
