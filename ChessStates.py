@@ -77,6 +77,51 @@ class ChessStates() :
         if (abs(curr_x-new_x)== abs(curr_y-new_y)) :
             return True
         return False 
+    
+    def Cmove(self , board,curr_pos,new_pos) : 
+        curr_x, curr_y = curr_pos
+        new_x, new_y = new_pos       
+        if curr_x + 2 == new_x and curr_y -1 ==new_y  :
+            return True
+        elif curr_x + 2 == new_x and curr_y +1 == new_y :
+            return True
+        elif curr_x - 2 == new_x and curr_y +1 == new_y  :
+            return True
+        elif curr_x - 2 == new_x and curr_y -1 == new_y  :
+            return True  
+        elif curr_x + 1 == new_x and curr_y -2 ==new_y  :
+            return True
+        elif curr_x + 1 == new_x and curr_y +2 == new_y :
+            return True
+        elif curr_x - 1 == new_x and curr_y +2 == new_y  :
+            return True
+        elif curr_x - 1 == new_x and curr_y -2 == new_y  :
+            return True      
+        else :
+            return False
+    
+    def Rmove(self,board,curr_pos,new_pos) :
+        curr_x, curr_y = curr_pos
+        new_x, new_y = new_pos  
+        if curr_x == new_x and new_y!=curr_y  :
+            return True
+        elif curr_y == new_y and  new_x!=curr_x :
+            return True 
+        elif (abs(curr_x-new_x)== abs(curr_y-new_y)) :
+            return True
+        else :
+            return False
+    def RNmove(self,board,curr_pos,new_pos) : 
+        curr_x, curr_y = curr_pos
+        new_x, new_y = new_pos       
+        if curr_x == new_x and abs(new_y-curr_y) == 1 :
+            return True
+        elif curr_y == new_y and  abs(new_x-curr_x) == 1 :
+            return True 
+        elif (abs(curr_x-new_x)== 1 and  abs(curr_y-new_y) == 1) :
+            return True
+        else :
+            return False        
     def __init__(self) -> None:
         whitesPieces = self.getPositions()
         blackPieces = [p.replace('b','n') for p in whitesPieces] 

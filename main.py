@@ -48,8 +48,10 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
     elif piece == 'RN' :
 
         pass
-    elif piece ==  'R' : 
-        pass 
+    elif piece ==  'R' :
+         if ChessStates.ChessStates().Rmove(board,curr_pos,new_pos) :
+             return True
+    
     elif piece == 'A' :
         if ChessStates.ChessStates().Amove(board,curr_pos,new_pos) :
             return True
@@ -59,6 +61,8 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
             return True 
         pass 
     elif piece == 'C' : 
+        if ChessStates.ChessStates().Cmove(board,curr_pos,new_pos ) :
+            return True
         pass
 def main():
     loadImages()
