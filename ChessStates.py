@@ -67,6 +67,8 @@ class ChessStates() :
             return True
         elif curr_y == new_y and  new_x!=curr_x :
             return True 
+        else :
+            return False
         pass
     def __init__(self) -> None:
         whitesPieces = self.getPositions()
