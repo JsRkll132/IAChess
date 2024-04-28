@@ -2,17 +2,27 @@ import ChessItems
 import random
 
 class ChessStates() : 
-    def isEmpty(self,board,curr_poss,new_poss) :
+    def isEmpty(self,board,curr_poss,new_poss,pType) :
         curr_x, curr_y = curr_poss
         new_x, new_y = new_poss    
+        if board[new_x][new_y]!='-' and board[new_x][new_y][-1]!=pType :
+            return True
+        
         if curr_x == new_x : 
             for i in range(min(curr_y,new_y),max(curr_y,new_y)) : 
-                if board[curr_x][i] !='-' and i!=curr_y : 
+                if ( board[curr_x][i] !='-' and i!=curr_y )  : 
                     return False
         elif curr_y == new_y : 
             for i in range(min(curr_x,new_x),max(curr_x,new_x)) : 
-                if board[i][curr_y] !='-' and i !=curr_x:
+                print(board[i][curr_y])
+                if ( board[i][curr_y]!='-' and i !=curr_x  ) :
                     return False
+
+                    
+        """elif (abs(curr_x-new_x)== abs(curr_y-new_y)) :
+            for i ,k in range(max(curr_x,new_x)-min(curr_x,new_x)) :
+                if board[max(curr_x,new_x)-i][max(curr_y,new_y)-i] != '-':
+                    return False"""
         return True    
     def isvalidPositition(self,randompieces = []) :
         t_index = [i for i, x in enumerate(randompieces) if x == "Tb"]
@@ -42,9 +52,14 @@ class ChessStates() :
         return self.tablero
     
     def isKilled(self,board = [],new_pos = [],curr_pos = []) : 
-        if board[new_pos[0]][new_pos[1]][-1] =='n' and board[curr_pos[0]][curr_pos[1]][-1] =='b'  or board[new_pos[0]][new_pos[1]][-1] =='b' and board[curr_pos[0]][curr_pos[1]][-1] =='n' : 
-            return True
-        return False
+        if new_pos ==None or curr_pos ==None :
+            return False
+        try : 
+            if (board[new_pos[0]][new_pos[1]][-1] =='n' and board[curr_pos[0]][curr_pos[1]][-1] =='b' ) or ( board[new_pos[0]][new_pos[1]][-1] =='b' and board[curr_pos[0]][curr_pos[1]][-1] =='n') : 
+                return True
+        except : 
+            return False
+    
     def toKill(self, board = [],new_pos = [],curr_pos = []) : 
         pass
     def PnMove(self,board, curr_pos, new_pos):
@@ -86,23 +101,25 @@ class ChessStates() :
             print("Movimiento no válido para el peón blanco.")
             return False
         
-    def Tmove(self,board, curr_pos, new_pos) : 
+    def Tmove(self,board, curr_pos, new_pos,pType) : 
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos  
         if curr_x == new_x and new_y!=curr_y :
-            if self.isEmpty(board,curr_pos,new_pos) :
+            if self.isEmpty(board,curr_pos,new_pos,pType) :
                 return True
         elif curr_y == new_y and  new_x!=curr_x :
-            if self.isEmpty(board,curr_pos,new_pos) :
+            if self.isEmpty(board,curr_pos,new_pos,pType) :
                 return True
         else :
             return False
         pass
+
     def Amove (self , board,curr_pos,new_pos) :
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos   
         if (abs(curr_x-new_x)== abs(curr_y-new_y)) :
-            return True
+            if (self.isEmpty( board,curr_pos,new_pos)) :
+                return True
         return False 
     
     def Cmove(self , board,curr_pos,new_pos) : 
@@ -127,16 +144,16 @@ class ChessStates() :
         else :
             return False
     
-    def RNmove(self,board,curr_pos,new_pos) :
+    def RNmove(self,board,curr_pos,new_pos,pType) :
         curr_x, curr_y = curr_pos
-        new_x, new_y = new_pos  
-        if curr_x == new_x and new_y!=curr_y  :
-            return True
-        elif curr_y == new_y and  new_x!=curr_x :
-            return True 
-        elif (abs(curr_x-new_x)== abs(curr_y-new_y)) :
-            
-            return True
+        new_x, new_y = new_pos
+        if (self.isEmpty(board,curr_pos,new_pos,pType)) :   
+            if curr_x == new_x and new_y!=curr_y  :
+                return True
+            elif curr_y == new_y and  new_x!=curr_x :
+                return True 
+            elif (abs(curr_x-new_x)== abs(curr_y-new_y)) :
+                return True
         else :
             return False
     def Rmove(self,board,curr_pos,new_pos) : 

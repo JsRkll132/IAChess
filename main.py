@@ -52,19 +52,18 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
                 return True
             
     elif piece == 'RN' :
-        if ChessStates.ChessStates().RNmove(board,curr_pos,new_pos):
+        if ChessStates.ChessStates().RNmove(board,curr_pos,new_pos,pType):
             return True 
         pass
     elif piece ==  'R' :
          if ChessStates.ChessStates().Rmove(board,curr_pos,new_pos) :
              return True
-    
     elif piece == 'A' :
         if ChessStates.ChessStates().Amove(board,curr_pos,new_pos) :
             return True
         pass
     elif piece =='T' : 
-        if ChessStates.ChessStates().Tmove(board,curr_pos,new_pos) : 
+        if ChessStates.ChessStates().Tmove(board,curr_pos,new_pos,pType) : 
             return True 
         pass 
     elif piece == 'C' : 
@@ -85,13 +84,11 @@ def main():
             elif evento.type == pygame.MOUSEBUTTONDOWN : 
                 x, y = pygame.mouse.get_pos()
                 position = move_piece(x, y)  # Llamar a la función para mover la pieza
-                if board[position[0]][position[1]] == '-' : 
+                if board[position[0]][position[1]] == '-' or ChessStates.ChessStates().isKilled(board,position,curr_pos) : 
                     new_pos = position
                 elif   board[position[0]][position[1]] != '-': 
                     piece = board[position[0]][position[1]]
                     curr_pos = position
-                elif ChessStates.ChessStates().isKilled(board,position,curr_pos) :
-                    pass
 
                 print(curr_pos)
                 print(new_pos)
@@ -125,6 +122,4 @@ def draw_board( board) :
 
 
 if __name__ == "__main__":
-    for i in range(10,6) :
-        print(i)
     main()
