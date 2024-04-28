@@ -11,6 +11,7 @@ ANCHO = 720
 ALTO = 720
 TAM_CUADRO = ANCHO // 8
 IMAGES = {}
+TURNO = True
 # Inicializar Pygame
 pygame.init()
 
@@ -43,6 +44,8 @@ def changePieces (newpos,currpos) :
 def verifiedPiece(piece,board,new_pos,curr_pos) : 
     pType = piece[-1]
     piece = piece[:-1]
+
+    
     if piece =='P' : 
         if pType =='b' : 
             if ChessStates.ChessStates().PbMove(board,curr_pos,new_pos) :
@@ -69,7 +72,7 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
     elif piece == 'C' : 
         if ChessStates.ChessStates().Cmove(board,curr_pos,new_pos ) :
             return True
-        pass
+    return False
 def main():
     loadImages()
     curr_pos=None
