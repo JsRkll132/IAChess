@@ -39,10 +39,28 @@ def changePieces (newpos,currpos) :
     board[currpos[0]][currpos[1]] = "-"
     [ print(f'{k}\n') for k in board ]
     draw_board(board)
+
+def verifiedPiece(piece,board,new_pos,curr_pos) : 
+    piece = piece[:-1]
+    if piece =='P' : 
+        if ChessStates.ChessStates().PbMove(board,curr_pos,new_pos) :
+            return True
+    elif piece == 'RN' :
+        
+        pass
+    elif piece ==  'R' : 
+        pass 
+    elif piece == 'A' :
+        pass
+    elif piece =='T' : 
+        pass 
+    elif piece == 'C' : 
+        pass
 def main():
     loadImages()
     curr_pos=None
     new_pos= None
+    piece = ""
     while True:
         
         for evento in pygame.event.get():
@@ -55,6 +73,7 @@ def main():
                 if board[position[0]][position[1]] == '-' : 
                     new_pos = position
                 elif   board[position[0]][position[1]] != '-': 
+                    piece = board[position[0]][position[1]]
                     curr_pos = position
                 elif ChessStates.ChessStates().isKilled(board,position,curr_pos) :
                     pass
@@ -62,7 +81,7 @@ def main():
                 print(curr_pos)
                 print(new_pos)
                 
-                if new_pos!= None and curr_pos!=None :
+                if new_pos!= None and curr_pos!=None and verifiedPiece(piece,board,new_pos,curr_pos) :
                     changePieces(new_pos,curr_pos)
                     curr_pos = None 
                     new_pos =None
@@ -88,24 +107,6 @@ def draw_board( board) :
                     pantalla.blit(IMAGES[piece], (x, y))
                 except : 
                     pass
- 
-def draw_board_and_pieces(board, white_pieces, black_pieces):
-    for fila in range(8):
-        for columna in range(8):
-            x = columna * TAM_CUADRO
-            y = fila * TAM_CUADRO
-            # Dibujar el tablero
-            color = BLANCO if (fila + columna) % 2 == 0 else NEGRO
-            pygame.draw.rect(pantalla, color, (x, y, TAM_CUADRO, TAM_CUADRO))
-            # Dibujar las piezas
-            piece = board[fila][columna]
-            if piece != '-' :
-                try : 
-                    image = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\\blackpieces\\' + piece + '.png'), (TAM_CUADRO, TAM_CUADRO))
-                    pantalla.blit(image, (x, y))
-                except : 
-                    image = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\whitepieces\\' + piece + '.png'), (TAM_CUADRO, TAM_CUADRO))
-                    pantalla.blit(image, (x, y))
 
 
 if __name__ == "__main__":
