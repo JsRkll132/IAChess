@@ -46,7 +46,8 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
         if ChessStates.ChessStates().PbMove(board,curr_pos,new_pos) :
             return True
     elif piece == 'RN' :
-
+        if ChessStates.ChessStates().RNmove(board,curr_pos,new_pos):
+            return True 
         pass
     elif piece ==  'R' :
          if ChessStates.ChessStates().Rmove(board,curr_pos,new_pos) :

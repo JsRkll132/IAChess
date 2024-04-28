@@ -100,7 +100,7 @@ class ChessStates() :
         else :
             return False
     
-    def Rmove(self,board,curr_pos,new_pos) :
+    def RNmove(self,board,curr_pos,new_pos) :
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos  
         if curr_x == new_x and new_y!=curr_y  :
@@ -111,7 +111,7 @@ class ChessStates() :
             return True
         else :
             return False
-    def RNmove(self,board,curr_pos,new_pos) : 
+    def Rmove(self,board,curr_pos,new_pos) : 
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos       
         if curr_x == new_x and abs(new_y-curr_y) == 1 :
