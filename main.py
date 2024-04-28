@@ -38,7 +38,7 @@ def changePieces (newpos,currpos) :
     board[newpos[0]][newpos[1]] = board[currpos[0]][currpos[1]]
     board[currpos[0]][currpos[1]] = "-"
     [ print(f'{k}\n') for k in board ]
-    draw_board(board)
+
 
 def verifiedPiece(piece,board,new_pos,curr_pos) : 
     pType = piece[-1]
