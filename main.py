@@ -44,7 +44,14 @@ def changePieces (newpos,currpos) :
 def verifiedPiece(piece,board,new_pos,curr_pos) : 
     pType = piece[-1]
     piece = piece[:-1]
-
+    print (TURNO)
+    print(pType)
+    if TURNO==True and pType !='b' :
+        print("El turno actual es de las fichas blancas...")
+        return False
+    elif TURNO == False and pType !='n' :
+        print("El turno actual es de las fichas negras...")
+        return False
     
     if piece =='P' : 
         if pType =='b' : 
@@ -74,6 +81,7 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
             return True
     return False
 def main():
+    global TURNO
     loadImages()
     curr_pos=None
     new_pos= None
@@ -92,14 +100,19 @@ def main():
                 elif   board[position[0]][position[1]] != '-': 
                     piece = board[position[0]][position[1]]
                     curr_pos = position
-
+                print(piece)
                 print(curr_pos)
                 print(new_pos)
-                
+                print(f'turno actual {TURNO}')
                 if new_pos!= None and curr_pos!=None and verifiedPiece(piece,board,new_pos,curr_pos) :
                     changePieces(new_pos,curr_pos)
                     curr_pos = None 
                     new_pos =None
+                    TURNO = not TURNO
+                elif new_pos!= None and curr_pos!=None and not verifiedPiece(piece,board,new_pos,curr_pos) :
+                    curr_pos = None 
+                    new_pos =None
+
                 
                 
         # Dibujar el tablero
