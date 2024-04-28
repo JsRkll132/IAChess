@@ -51,6 +51,8 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
     elif piece ==  'R' : 
         pass 
     elif piece == 'A' :
+        if ChessStates.ChessStates().Amove(board,curr_pos,new_pos) :
+            return True
         pass
     elif piece =='T' : 
         if ChessStates.ChessStates().Tmove(board,curr_pos,new_pos) : 
