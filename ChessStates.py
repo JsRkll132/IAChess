@@ -118,8 +118,7 @@ class ChessStates() :
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos   
         if (abs(curr_x-new_x)== abs(curr_y-new_y)) :
-            if (self.isEmpty( board,curr_pos,new_pos)) :
-                return True
+            return True
         return False 
     
     def Cmove(self , board,curr_pos,new_pos) : 
