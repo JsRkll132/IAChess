@@ -14,8 +14,8 @@ IMAGES = {}
 TURNO = True
 # Inicializar Pygame
 pygame.init()
-
-board =  ChessStates.ChessStates().getBoard()
+CurrentChessGame = ChessStates.ChessStates()
+board =  CurrentChessGame.getBoard()
 # Crear la pantalla
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Tablero de Ajedrez")
@@ -27,10 +27,10 @@ def loadImages() :
         IMAGES[i] = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\\blackpieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))
     for i in whitePieces : 
         IMAGES[i] = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\\whitepieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))    
-
-def move_piece(x, y):
-    fila = y // TAM_CUADRO
-    columna = x // TAM_CUADRO
+"""
+def move_piece(x, y,param_y = TAM_CUADRO,param_x=TAM_CUADRO):
+    fila = y // param_y
+    columna = x // param_x
 
     print(f'Moviendo pieza en la fila {fila} y columna {columna}')
     return fila,columna
@@ -38,9 +38,9 @@ def changePieces (newpos,currpos) :
     
     board[newpos[0]][newpos[1]] = board[currpos[0]][currpos[1]]
     board[currpos[0]][currpos[1]] = "-"
-    [ print(f'{k}\n') for k in board ]
+    [ print(f'{k}\n') for k in board ]"""
 
-
+"""
 def verifiedPiece(piece,board,new_pos,curr_pos) : 
     pType = piece[-1]
     piece = piece[:-1]
@@ -55,71 +55,34 @@ def verifiedPiece(piece,board,new_pos,curr_pos) :
     
     if piece =='P' : 
         if pType =='b' : 
-            if ChessStates.ChessStates().PbMove(board,curr_pos,new_pos) :
+            if CurrentChessGame.PbMove(board,curr_pos,new_pos) :
                 return True
         elif pType == 'n' : 
-            if ChessStates.ChessStates().PnMove(board,curr_pos,new_pos) :
+            if CurrentChessGame.PnMove(board,curr_pos,new_pos) :
                 return True
             
     elif piece == 'RN' :
-        if ChessStates.ChessStates().RNmove(board,curr_pos,new_pos,pType):
+        if CurrentChessGame.RNmove(board,curr_pos,new_pos,pType):
             return True 
         pass
     elif piece ==  'R' :
-         if ChessStates.ChessStates().Rmove(board,curr_pos,new_pos) :
+         if CurrentChessGame.Rmove(board,curr_pos,new_pos) :
              return True
     elif piece == 'A' :
-        if ChessStates.ChessStates().Amove(board,curr_pos,new_pos) :
+        if CurrentChessGame.Amove(board,curr_pos,new_pos) :
             return True
         pass
     elif piece =='T' : 
-        if ChessStates.ChessStates().Tmove(board,curr_pos,new_pos,pType) : 
+        if CurrentChessGame.Tmove(board,curr_pos,new_pos,pType) : 
             return True 
         pass 
     elif piece == 'C' : 
-        if ChessStates.ChessStates().Cmove(board,curr_pos,new_pos ) :
+        if CurrentChessGame.Cmove(board,curr_pos,new_pos ) :
             return True
-    return False
-def main():
-    global TURNO
-    loadImages()
-    curr_pos=None
-    new_pos= None
-    piece = ""
-    while True:
-        
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif evento.type == pygame.MOUSEBUTTONDOWN : 
-                x, y = pygame.mouse.get_pos()
-                position = move_piece(x, y)  # Llamar a la función para mover la pieza
-                if board[position[0]][position[1]] == '-' or ChessStates.ChessStates().isKilled(board,position,curr_pos) : 
-                    new_pos = position
-                elif   board[position[0]][position[1]] != '-': 
-                    piece = board[position[0]][position[1]]
-                    curr_pos = position
-                print(piece)
-                print(curr_pos)
-                print(new_pos)
-                print(f'turno actual {TURNO}')
-                if new_pos!= None and curr_pos!=None and verifiedPiece(piece,board,new_pos,curr_pos) :
-                    changePieces(new_pos,curr_pos)
-                    curr_pos = None 
-                    new_pos =None
-                    TURNO = not TURNO
-                elif new_pos!= None and curr_pos!=None and not verifiedPiece(piece,board,new_pos,curr_pos) :
-                    curr_pos = None 
-                    new_pos =None
+    return False"""
 
-                
-                
-        # Dibujar el tablero
-        draw_board(board)
 
-        # Actualizar la pantalla
-        pygame.display.flip()
+
 def draw_board( board) :
     for fila in range(8):
         for columna in range(8):
@@ -136,6 +99,58 @@ def draw_board( board) :
                 except : 
                     pass
 
+def gameLoop(piece = "",curr_pos = None,new_pos = None) : 
+    pass
+
+
+
+def main():
+    global TURNO
+    loadImages()
+    curr_pos=None
+    new_pos= None
+    piece = ""
+    while True:
+        
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif evento.type == pygame.MOUSEBUTTONDOWN : 
+                x, y = pygame.mouse.get_pos()
+                position = CurrentChessGame.move_piece(x,y,TAM_CUADRO,TAM_CUADRO)  # Llamar a la función para mover la pieza
+                print("posicion")
+                print(position)
+                print((x//TAM_CUADRO,y//TAM_CUADRO))
+                print(CurrentChessGame.getBoard())
+                legal_moves = CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),(y//TAM_CUADRO,x//TAM_CUADRO))
+                print("LEGAL MOVES")
+                print(legal_moves)
+                if CurrentChessGame.getBoard()[position[0]][position[1]] == '-' or CurrentChessGame.isKilled(position,curr_pos) : 
+                    new_pos = position
+                elif   CurrentChessGame.getBoard()[position[0]][position[1]] != '-': 
+                    piece = CurrentChessGame.getBoard()[position[0]][position[1]]
+                    curr_pos = position
+                print(piece)
+                print(curr_pos)
+                print(new_pos)
+                print(f'turno actual {CurrentChessGame.getTurno()}')
+                if new_pos!= None and curr_pos!=None and CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos) :
+                    CurrentChessGame.changePieces(new_pos,curr_pos)
+                    curr_pos = None 
+                    new_pos =None
+                    CurrentChessGame.changeTurno()
+                elif new_pos!= None and curr_pos!=None and not CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos) :
+                    curr_pos = None 
+                    new_pos =None
+
+                
+                
+        # Dibujar el tablero
+        draw_board(CurrentChessGame.getBoard())
+
+        # Actualizar la pantalla
+        pygame.display.flip()
 
 if __name__ == "__main__":
     main()
