@@ -7,6 +7,18 @@ class ChessStates() :
         new_x, new_y = new_poss    
         col_pos_valids = []
         row_pos_valids = []
+        if abs(curr_x - new_x) == abs(curr_y - new_y):
+        # Determinar la dirección de movimiento
+            dir_x = 1 if new_x > curr_x else -1
+            dir_y = 1 if new_y > curr_y else -1
+
+            # Verificar si hay fichas en el camino diagonal
+            for i in range(1, abs(curr_x - new_x)):
+                check_x = curr_x + i * dir_x
+                check_y = curr_y + i * dir_y
+                print(f'chech in {(check_x,check_y)}')
+                if self.tablero[check_x][check_y] != '-':
+                    return False
         if curr_x == new_x : 
             for i in range(min(curr_y,new_y),max(curr_y,new_y)) : 
                 if ( self.tablero[curr_x][i] !='-' and i!=curr_y )  : 
@@ -118,10 +130,10 @@ class ChessStates() :
             return False
         pass
 
-    def Amove (self ,curr_pos,new_pos) :
+    def Amove (self ,curr_pos,new_pos,pType) :
         curr_x, curr_y = curr_pos
         new_x, new_y = new_pos   
-        if (abs(curr_x-new_x)== abs(curr_y-new_y)) :
+        if (abs(curr_x-new_x)== abs(curr_y-new_y)) and self.isEmpty(curr_pos,new_pos,pType) :
             return True
         return False 
     
@@ -170,14 +182,14 @@ class ChessStates() :
             return True
         else :
             return False      
-    def verifiedPiece(self,piece,new_pos,curr_pos) : 
+    def verifiedPiece(self,piece,new_pos,curr_pos,for_all = True) : 
         pType = piece[-1]
         piece = piece[:-1]
         
-        if self.turno==True and pType !='b' :
+        if for_all and self.turno==True and pType !='b' :
             print("El self.turno actual es de las fichas blancas...")
             return False
-        elif self.turno == False and pType !='n' :
+        elif for_all and self.turno == False and pType !='n' :
             print("El self.turno actual es de las fichas negras...")
             return False
         
@@ -197,7 +209,7 @@ class ChessStates() :
             if self.Rmove(curr_pos,new_pos) :
                 return True
         elif piece == 'A' :
-            if self.Amove(curr_pos,new_pos) :
+            if self.Amove(curr_pos,new_pos,pType) :
                 return True
             pass
         elif piece =='T' : 
@@ -261,7 +273,7 @@ class ChessStates() :
             for j in range(0,len(board[i])):
                 new_pos = (i, j)
                 print(f"new pos un fuc {new_pos}")
-                if self.verifiedPiece(piece, new_pos, position) and board[new_pos[0]][new_pos[1]][-1] != player_color:
+                if self.verifiedPiece(piece, new_pos, position,False) and board[new_pos[0]][new_pos[1]][-1] != player_color:
                     legal_moves.append(new_pos)
 
         return legal_moves    
