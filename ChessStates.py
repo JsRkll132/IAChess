@@ -23,16 +23,15 @@ class ChessStates() :
             for i in range(min(curr_y,new_y),max(curr_y,new_y)) : 
                 if ( self.tablero[curr_x][i] !='-' and i!=curr_y )  : 
                     if i == new_y and self.tablero[curr_x][i][-1]!=pType :
-                        pass
+                        continue
                     return False
         elif curr_y == new_y : 
             for i in range(min(curr_x,new_x),max(curr_x,new_x)) : 
                 print(self.tablero[i][curr_y])
                 if ( self.tablero[i][curr_y]!='-' and i !=curr_x  ) :
-                    if i == new_x and self.tablero[curr_y][i][-1]!=pType :
-                        pass
-                    #if self.tablero[curr_x][i][-1]!=pType :
-                    #    return True
+                    print(f"new x {new_x}")
+                    if i == new_x and self.tablero[i][curr_y][-1]!=pType :
+                        continue
                     return False                    
                     #row_pos_valids.append(False)
         if self.tablero[new_x][new_y]!='-' and self.tablero[new_x][new_y][-1]!=pType :
@@ -248,8 +247,52 @@ class ChessStates() :
         self.tablero[currpos[0]][currpos[1]] = "-"
         [ print(f'{k}\n') for k in self.tablero ]
 
+    def count_legal_moves(self, board, player_color):
+        legal_moves_count = 0
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                piece = board[i][j]
+                if piece != '-' and piece[-1] == player_color:
+                    legal_moves = self.generate_legal_moves(board, (i, j))
+                    legal_moves_count += len(legal_moves)
+        return legal_moves_count
+    
+    def generate_legal_moves(self, board,player_color):
+        legal_moves = []
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                position = (i, j)
+                piece = board[position[0]][position[1]]
+                if piece != '-' and piece[-1] == player_color:
+                    moves_for_piece = self.generate_legal_moves_for_piece(board, position)
+                    legal_moves.extend([(position, move) for move in moves_for_piece])
+        print(f'legal moves for {player_color}')
+        print(legal_moves)
+        return legal_moves
 
-    def generate_legal_moves(self, board, position):
+    def evaluate_board(self, board):
+        material_values = {
+            'Pb': 1, 'Pn': -1,  # Peones
+            'Cb': 3, 'Cn': -3,  # Caballos
+            'Ab': 3, 'An': -3,  # Alfiles
+            'Tb': 5, 'Tn': -5,  # Torres
+            'RNb': 9, 'RNn': -9,  # Reinas
+            'Rb': 90, 'Rn': -90  # Reyes
+        }
+
+        white_material = 0
+        black_material = 0
+
+        for row in board:
+            for piece in row:
+                if piece != '-':
+                    if piece[-1] == 'b':
+                        white_material += material_values[piece]
+                    else:
+                        black_material += material_values[piece]
+
+        return white_material ,black_material
+    def generate_legal_moves_for_piece(self, board, position):
         """
         Genera todos los movimientos legales posibles para una pieza en una posición dada.
         :param board: Tablero actual del juego.
@@ -257,7 +300,7 @@ class ChessStates() :
         :return: Lista de posiciones (filas, columnas) a las que la pieza puede moverse legalmente.
         """
         piece = board[position[0]][position[1]]
-        print(f"piece in generate {piece}")
+       # print(f"piece in generate {piece}")
         if piece == '-':
             return []  # No hay movimientos legales para una casilla vacía
 
@@ -272,13 +315,27 @@ class ChessStates() :
         for i in range(0,len(board)):
             for j in range(0,len(board[i])):
                 new_pos = (i, j)
-                print(f"new pos un fuc {new_pos}")
+                #print(f"new pos un fuc {new_pos}")
                 if self.verifiedPiece(piece, new_pos, position,False) and board[new_pos[0]][new_pos[1]][-1] != player_color:
                     legal_moves.append(new_pos)
 
         return legal_moves    
     def __init__(self) -> None:
         self.turno = True
+        self.piece_values = {
+            'Pb': 1,   # Peón blanco
+            'Pn': -1,  # Peón negro
+            'Cb': 3,   # Caballo blanco
+            'Cn': -3,  # Caballo negro
+            'Ab': 3,   # Alfil blanco
+            'An': -3,  # Alfil negro
+            'Tb': 5,   # Torre blanca
+            'Tn': -5,  # Torre negra
+            'RNb': 9,  # Reina blanca
+            'RNn': -9, # Reina negra
+            'Rb': 90,  # Rey blanco
+            'Rn': -90  # Rey negro
+        }
         whitesPieces = self.getPositions()
         blackPieces = [p.replace('b','n') for p in whitesPieces] 
         self.tablero = [

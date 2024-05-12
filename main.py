@@ -2,6 +2,7 @@ import pygame
 import sys
 import ChessStates
 import ChessItems
+import time
 # Definir algunos colores
 BLANCO = (255, 255, 255)
 NEGRO = (0, 99, 147)
@@ -27,60 +28,6 @@ def loadImages() :
         IMAGES[i] = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\\blackpieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))
     for i in whitePieces : 
         IMAGES[i] = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\\whitepieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))    
-"""
-def move_piece(x, y,param_y = TAM_CUADRO,param_x=TAM_CUADRO):
-    fila = y // param_y
-    columna = x // param_x
-
-    print(f'Moviendo pieza en la fila {fila} y columna {columna}')
-    return fila,columna
-def changePieces (newpos,currpos) :
-    
-    board[newpos[0]][newpos[1]] = board[currpos[0]][currpos[1]]
-    board[currpos[0]][currpos[1]] = "-"
-    [ print(f'{k}\n') for k in board ]"""
-
-"""
-def verifiedPiece(piece,board,new_pos,curr_pos) : 
-    pType = piece[-1]
-    piece = piece[:-1]
-    print (TURNO)
-    print(pType)
-    if TURNO==True and pType !='b' :
-        print("El turno actual es de las fichas blancas...")
-        return False
-    elif TURNO == False and pType !='n' :
-        print("El turno actual es de las fichas negras...")
-        return False
-    
-    if piece =='P' : 
-        if pType =='b' : 
-            if CurrentChessGame.PbMove(board,curr_pos,new_pos) :
-                return True
-        elif pType == 'n' : 
-            if CurrentChessGame.PnMove(board,curr_pos,new_pos) :
-                return True
-            
-    elif piece == 'RN' :
-        if CurrentChessGame.RNmove(board,curr_pos,new_pos,pType):
-            return True 
-        pass
-    elif piece ==  'R' :
-         if CurrentChessGame.Rmove(board,curr_pos,new_pos) :
-             return True
-    elif piece == 'A' :
-        if CurrentChessGame.Amove(board,curr_pos,new_pos) :
-            return True
-        pass
-    elif piece =='T' : 
-        if CurrentChessGame.Tmove(board,curr_pos,new_pos,pType) : 
-            return True 
-        pass 
-    elif piece == 'C' : 
-        if CurrentChessGame.Cmove(board,curr_pos,new_pos ) :
-            return True
-    return False"""
-
 
 
 def draw_board( board) :
@@ -123,7 +70,13 @@ def main():
                 print(position)
                 print((x//TAM_CUADRO,y//TAM_CUADRO))
                 print(CurrentChessGame.getBoard())
-                legal_moves = CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),(y//TAM_CUADRO,x//TAM_CUADRO))
+                legal_moves = CurrentChessGame.generate_legal_moves_for_piece(CurrentChessGame.getBoard(),(y//TAM_CUADRO,x//TAM_CUADRO))
+                print("--------------------")
+               # print(f"legal moves whites : {CurrentChessGame.count_legal_moves(CurrentChessGame.getBoard(),'b')}")
+              #  print(f"legal moves whites : {CurrentChessGame.count_legal_moves(CurrentChessGame.getBoard(),'n')}")
+                CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),'b')
+                CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),'n')
+                print(CurrentChessGame.evaluate_board(CurrentChessGame.getBoard()))
                 print("LEGAL MOVES")
                 print(legal_moves)
                 if CurrentChessGame.getBoard()[position[0]][position[1]] == '-' or CurrentChessGame.isKilled(position,curr_pos) : 
@@ -136,6 +89,7 @@ def main():
                 print(new_pos)
                 print(f'turno actual {CurrentChessGame.getTurno()}')
                 if new_pos!= None and curr_pos!=None and CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos) :
+                    time.sleep(0.2)
                     CurrentChessGame.changePieces(new_pos,curr_pos)
                     curr_pos = None 
                     new_pos =None
