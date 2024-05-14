@@ -2,6 +2,7 @@ import pygame
 import sys
 import ChessStates
 import ChessItems
+import ChessEngine
 import time
 # Definir algunos colores
 BLANCO = (255, 255, 255)
@@ -16,7 +17,7 @@ TURNO = True
 # Inicializar Pygame
 pygame.init()
 CurrentChessGame = ChessStates.ChessStates()
-board =  CurrentChessGame.getBoard()
+#board =  CurrentChessGame.getBoard()
 # Crear la pantalla
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Tablero de Ajedrez")
@@ -57,8 +58,15 @@ def main():
     curr_pos=None
     new_pos= None
     piece = ""
+    best = None
     while True:
-        
+        #board_aux = CurrentChessGame.getBoard()
+        #next_data = ChessEngine.ChessEngine().minmax(board_aux,1,True,'b')
+        #print(next_data)
+        if (CurrentChessGame.getTurno() ==False and best != None) : 
+            CurrentChessGame.changePieces(best[0][1],best[0][0])
+            CurrentChessGame.changeTurno()
+            time.sleep(0.5)
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
@@ -74,8 +82,15 @@ def main():
                 print("--------------------")
                # print(f"legal moves whites : {CurrentChessGame.count_legal_moves(CurrentChessGame.getBoard(),'b')}")
               #  print(f"legal moves whites : {CurrentChessGame.count_legal_moves(CurrentChessGame.getBoard(),'n')}")
-                CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),'b')
+                lg_whites = CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),'b')
+                print(f'lfwhites : {lg_whites}')
                 CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),'n')
+               # board_aux = []
+                board_aux = [row[:] for row in CurrentChessGame.getBoard()]
+                best = ChessEngine.ChessEngine().minmax(board_aux,2,False,'b')
+                print(f'This is the best move : {best[0]}')
+                #print("nex data :")
+               # print(next_data)
                 print(CurrentChessGame.evaluate_board(CurrentChessGame.getBoard()))
                 print("LEGAL MOVES")
                 print(legal_moves)
@@ -88,16 +103,16 @@ def main():
                 print(curr_pos)
                 print(new_pos)
                 print(f'turno actual {CurrentChessGame.getTurno()}')
-                if new_pos!= None and curr_pos!=None and CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos) :
+                if new_pos!= None and curr_pos!=None and CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos,board =  CurrentChessGame.getBoard()) :
                     time.sleep(0.2)
                     CurrentChessGame.changePieces(new_pos,curr_pos)
                     curr_pos = None 
                     new_pos =None
                     CurrentChessGame.changeTurno()
-                elif new_pos!= None and curr_pos!=None and not CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos) :
+                elif new_pos!= None and curr_pos!=None and not CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos,board =  CurrentChessGame.getBoard()) :
                     curr_pos = None 
                     new_pos =None
-
+                
                 
                 
         # Dibujar el tablero
