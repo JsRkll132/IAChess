@@ -4,7 +4,14 @@ from math import inf
 
 class ChessEngine () :
     def changePieces2 (self,newpos,currpos,board) :
-    
+        if board[currpos[0]][currpos[1]] == 'Pb' and newpos[0] == 0  :
+             board[newpos[0]][newpos[1]] = random.choice(['Cb','Ab','Tb'])
+             board[currpos[0]][currpos[1]] = "-"
+             return
+        if board[currpos[0]][currpos[1]] == 'Pn' and newpos[0] == 7  :
+             board[newpos[0]][newpos[1]] = random.choice(['Cn','An','Tn'])
+             board[currpos[0]][currpos[1]] = "-"
+             return    
         board[newpos[0]][newpos[1]] = board[currpos[0]][currpos[1]]
         board[currpos[0]][currpos[1]] = "-"
     def isEmpty(self,curr_poss,new_poss,pType,board) :
@@ -61,12 +68,12 @@ class ChessEngine () :
 
         # Verificar si la posición actual contiene un peón blanco
         if board[curr_x][curr_y] != 'Pb':
-            print("La posición actual no contiene un peón blanco.")
+            #print("La posición actual no contiene un peón blanco.")
             return False
 
         # Verificar si la nueva posición está dentro del tablero
         if not (0 <= new_x < 8 and 0 <= new_y < 8):
-            print("La nueva posición está fuera del tablero.")
+            #print("La nueva posición está fuera del tablero.")
             return False
 
         # Verificar si el movimiento es válido
@@ -216,8 +223,8 @@ class ChessEngine () :
                 if piece != '-' and piece[-1] == player_color:
                     moves_for_piece = self.generate_legal_moves_for_piece(board, position)
                     legal_moves.extend([(position, move) for move in moves_for_piece])
-        print(f'legal moves for {player_color}')
-        print(legal_moves)
+        #print(f'legal moves for {player_color}')
+        #(legal_moves)
         return legal_moves
      
     def evaluate_board(self, board):
@@ -388,31 +395,4 @@ class ChessEngine () :
     def __init__(self) -> None:
         pass
 
-    alt =  """    def minmax(self,board,deph,maximizing_player,maximizing_color) :
-        if deph==0 : 
-            return None,self.evaluate(board,maximizing_color)
-        moves = self.generate_legal_moves(board,'b') + self.generate_legal_moves(board,'n')
-      #  print(moves)
-        best_move = random.choice(moves)
-        if maximizing_player : 
-            max_eval = -inf 
-            for move in moves : 
-                old_board = board
-                self.changePieces2(move[1],move[0],board)
-                current_eval = self.minmax(board,deph-1,False,maximizing_color)[1]
-                board = old_board
-                if current_eval>max_eval :
-                    max_eval = current_eval
-                    best_move = move
-            return best_move , max_eval
-        else : 
-            min_eval = abs(inf) 
-            for move in moves : 
-                old_board = board
-                self.changePieces2(move[1],move[0],board)     
-                current_eval = self.minmax(board,deph-1,True,maximizing_color)[1]    
-                board = old_board
-                if current_eval < min_eval : 
-                    min_eval = current_eval 
-                    best_move = move
-            return best_move , min_eval"""
+    

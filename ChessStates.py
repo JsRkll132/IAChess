@@ -98,12 +98,12 @@ class ChessStates() :
 
         # Verificar si la posición actual contiene un peón blanco
         if board[curr_x][curr_y] != 'Pb':
-            print("La posición actual no contiene un peón blanco.")
+         #   print("La posición actual no contiene un peón blanco.")
             return False
 
         # Verificar si la nueva posición está dentro del tablero
         if not (0 <= new_x < 8 and 0 <= new_y < 8):
-            print("La nueva posición está fuera del tablero.")
+       #     print("La nueva posición está fuera del tablero.")
             return False
 
         # Verificar si el movimiento es válido
@@ -114,7 +114,7 @@ class ChessStates() :
         elif (new_x, new_y) in [(curr_x - 1, curr_y - 1), (curr_x - 1, curr_y + 1)] and board[new_x][new_y][-1] == 'n':
             return True  # Captura en diagonal
         else:
-            print("Movimiento no válido para el peón blanco.")
+           # print("Movimiento no válido para el peón blanco.")
             return False
         
     def Tmove(self,curr_pos, new_pos,pType,board) : 
@@ -187,10 +187,10 @@ class ChessStates() :
         piece = piece[:-1]
         if for_all : 
             if  self.getTurno()==True and pType !='b' :
-                print("El self.turno actual es de las fichas blancas...")
+               # print("El self.turno actual es de las fichas blancas...")
                 return False
             elif self.getTurno() == False and pType !='n' :
-                print("El self.turno actual es de las fichas negras...")
+              #  print("El self.turno actual es de las fichas negras...")
                 return False
         
         if piece =='P' : 
@@ -243,7 +243,14 @@ class ChessStates() :
         print(f'Moviendo pieza en la fila {fila} y columna {columna}')
         return fila,columna
     def changePieces (self,newpos,currpos) :
-        
+        if self.tablero[currpos[0]][currpos[1]] == 'Pb' and newpos[0] == 0  :
+             self.tablero[newpos[0]][newpos[1]] = random.choice(['Cb','Ab','Tb'])
+             self.tablero[currpos[0]][currpos[1]] = "-"
+             return
+        if self.tablero[currpos[0]][currpos[1]] == 'Pn' and newpos[0] == 7  :
+             self.tablero[newpos[0]][newpos[1]] = random.choice(['Cn','An','Tn'])
+             self.tablero[currpos[0]][currpos[1]] = "-"
+             return
         self.tablero[newpos[0]][newpos[1]] = self.tablero[currpos[0]][currpos[1]]
         self.tablero[currpos[0]][currpos[1]] = "-"
         [ print(f'{k}\n') for k in self.tablero ]
@@ -295,7 +302,7 @@ class ChessStates() :
                 if piece != '-' and piece[-1] == player_color:
                     moves_for_piece = self.generate_legal_moves_for_piece(board, position)
                     legal_moves.extend([(position, move) for move in moves_for_piece])
-        print(f'legal moves for {player_color}')
+       # print(f'legal moves for {player_color}')
         print(legal_moves)
         return legal_moves
 
