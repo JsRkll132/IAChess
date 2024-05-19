@@ -63,6 +63,10 @@ def main():
         #board_aux = CurrentChessGame.getBoard()
         #next_data = ChessEngine.ChessEngine().minmax(board_aux,1,True,'b')
         #print(next_data)
+        if not CurrentChessGame.getTurno() :
+                board_aux = [row[:] for row in CurrentChessGame.getBoard()]
+                best = ChessEngine.ChessEngine().minmax(board_aux,2,False,'b')
+                print(f'This is the best move : {best[0]}')
         if (CurrentChessGame.getTurno() ==False and best != None) : 
             CurrentChessGame.changePieces(best[0][1],best[0][0])
             CurrentChessGame.changeTurno()
@@ -86,9 +90,9 @@ def main():
                 print(f'lfwhites : {lg_whites}')
                 CurrentChessGame.generate_legal_moves(CurrentChessGame.getBoard(),'n')
                # board_aux = []
-                board_aux = [row[:] for row in CurrentChessGame.getBoard()]
-                best = ChessEngine.ChessEngine().minmax(board_aux,2,False,'b')
-                print(f'This is the best move : {best[0]}')
+
+
+                
                 #print("nex data :")
                # print(next_data)
                 print(CurrentChessGame.evaluate_board(CurrentChessGame.getBoard()))
@@ -104,7 +108,8 @@ def main():
                 print(new_pos)
                 print(f'turno actual {CurrentChessGame.getTurno()}')
                 if new_pos!= None and curr_pos!=None and CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos,board =  CurrentChessGame.getBoard()) :
-                    time.sleep(0.2)
+                    if CurrentChessGame.getTurno() :
+                        time.sleep(0.2)
                     CurrentChessGame.changePieces(new_pos,curr_pos)
                     curr_pos = None 
                     new_pos =None

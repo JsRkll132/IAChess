@@ -267,8 +267,8 @@ class ChessEngine () :
             return best_move, max_eval
         else:
             # Minimizing for black pieces
-            moves = self.generate_legal_moves(board, 'n')
-            min_eval = inf
+            moves = self.generate_legal_moves(board, 'n')#GENERA MOVIMIENTOS LEGALES FICHAS NEGRAS
+            min_eval = inf 
             best_move = random.choice(moves)
             for move in moves:
                 # Create a copy of the board to apply the move
