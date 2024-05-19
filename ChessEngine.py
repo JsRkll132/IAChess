@@ -1,3 +1,4 @@
+import heapq
 import random
 from math import inf
 
@@ -247,39 +248,142 @@ class ChessEngine () :
             return scores[0] - scores[1]
         else :
             return scores[1] - scores[0]
-    def minmax(self, board, depth, maximizing_player, maximizing_color):
-        if depth == 0:
-            return None, self.evaluate(board, maximizing_color)
         
+
+
+    def is_in_check(self, board, player_color):
+        # Encuentra la posición del rey del jugador actual
+        king_pos = None
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                piece = board[i][j]
+                if piece == ('R' + player_color):
+                    king_pos = (i, j)
+                    break
+            if king_pos:
+                break
+        
+        if not king_pos:
+            return False  # No se encontró el rey, algo anda mal
+
+        # Comprueba si alguna pieza enemiga puede atacar al rey
+        opponent_color = 'b' if player_color == 'n' else 'n'
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                piece = board[i][j]
+                if piece != '-' and piece[-1] == opponent_color:
+                    if self.verifiedPiece(piece, king_pos, (i, j), board):
+                        return True
+        return False
+
+    def is_checkmate(self, board, player_color):
+        if not self.is_in_check(board, player_color):
+            return False
+        
+        # Genera todos los movimientos legales del jugador actual
+        legal_moves = self.generate_legal_moves(board, player_color)
+        
+        # Comprueba si existe al menos un movimiento legal que saque al rey del jaque
+        for move in legal_moves:
+            board_copy = [row[:] for row in board]
+            self.changePieces2(move[1], move[0], board_copy)
+            if not self.is_in_check(board_copy, player_color):
+                return False
+        
+        return True
+    
+    # Implementación de las demás funciones como generate_legal_moves, verifiedPiece, etc.
+   
+    def minmax(self, board, depth, maximizing_player, maximizing_color, alpha=-float('inf'), beta=float('inf')):
+        if depth == 0 or self.is_checkmate(board=board,player_color=maximizing_color):
+            return None, self.evaluate(board, maximizing_color)
+
         if maximizing_player:
-            # Maximizing for white pieces
             moves = self.generate_legal_moves(board, 'b')
-            max_eval = -inf
-            best_move = random.choice(moves)
+            max_eval = -float('inf')
+            best_move = None
             for move in moves:
-                # Create a copy of the board to apply the move
                 board_copy = [row[:] for row in board]
                 self.changePieces2(move[1], move[0], board_copy)
-                current_eval = self.minmax(board_copy, depth - 1, False, maximizing_color)[1]
+                current_eval = self.minmax(board_copy, depth - 1, False, maximizing_color, alpha, beta)[1]
                 if current_eval > max_eval:
                     max_eval = current_eval
                     best_move = move
+                alpha = max(alpha, current_eval)
+                if beta <= alpha:
+                    break
             return best_move, max_eval
         else:
-            # Minimizing for black pieces
-            moves = self.generate_legal_moves(board, 'n')#GENERA MOVIMIENTOS LEGALES FICHAS NEGRAS
-            min_eval = inf 
-            best_move = random.choice(moves)
+            moves = self.generate_legal_moves(board, 'n')
+            min_eval = float('inf')
+            best_move = None
             for move in moves:
-                # Create a copy of the board to apply the move
                 board_copy = [row[:] for row in board]
                 self.changePieces2(move[1], move[0], board_copy)
-                current_eval = self.minmax(board_copy, depth - 1, True, maximizing_color)[1]
+                current_eval = self.minmax(board_copy, depth - 1, True, maximizing_color, alpha, beta)[1]
                 if current_eval < min_eval:
                     min_eval = current_eval
                     best_move = move
+                beta = min(beta, current_eval)
+                if beta <= alpha:
+                    break
             return best_move, min_eval
-  
+
+    
+    def best_first_search(self, board, player_color, max_depth):
+        def evaluate_board_for_best_first(board):
+            white_material, black_material = self.evaluate_board(board)
+            if player_color == 'n':
+                return black_material - white_material
+            else:
+                return white_material - black_material
+
+        # Inicializamos la cola de prioridad (invertimos los valores para obtener el máximo score)
+        priority_queue = []
+
+        # Generamos movimientos iniciales para el color del jugador
+        initial_moves = self.generate_legal_moves(board, player_color)
+
+        for move in initial_moves:
+            board_copy = [row[:] for row in board]  # Creamos una copia del tablero
+            self.changePieces2(move[1], move[0], board_copy)  # Aplicamos el movimiento
+            score = evaluate_board_for_best_first(board_copy)  # Evaluamos el tablero resultante
+            heapq.heappush(priority_queue, (-score, move, board_copy))  # Añadimos a la cola de prioridad con score negativo para max heap
+
+        best_move = None
+        best_score = -inf if player_color == 'n' else inf
+
+        # Buscamos el mejor movimiento en función de la evaluación
+        while priority_queue and max_depth > 0:
+            current_neg_score, current_move, current_board = heapq.heappop(priority_queue)
+            current_score = -current_neg_score  # Convertimos el score de nuevo a positivo
+            max_depth -= 1
+            
+            if (player_color == 'n' and current_score > best_score) or (player_color == 'b' and current_score < best_score):
+                best_score = current_score
+                best_move = current_move
+
+            # Generamos movimientos siguientes para el color contrario
+            next_moves = self.generate_legal_moves(current_board, 'b' if player_color == 'n' else 'n')
+            for next_move in next_moves:
+                board_copy = [row[:] for row in current_board]  # Creamos una copia del tablero
+                self.changePieces2(next_move[1], next_move[0], board_copy)  # Aplicamos el movimiento
+                score = evaluate_board_for_best_first(board_copy)  # Evaluamos el tablero resultante
+                heapq.heappush(priority_queue, (-score, next_move, board_copy))  # Añadimos a la cola de prioridad con score negativo para max heap
+
+        return best_move, best_score
+    #criterio idiota (dificultad facil )
+    def random_move(self, board, player_color):
+        # Genera todos los movimientos legales para el jugador dado
+        legal_moves = self.generate_legal_moves(board, player_color)
+        
+        if not legal_moves:
+            return None  # No hay movimientos legales disponibles
+        
+        # Selecciona un movimiento aleatorio de la lista de movimientos legales
+        selected_move = random.choice(legal_moves)
+        
+        return selected_move,None
 
     def __init__(self) -> None:
         pass

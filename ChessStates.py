@@ -328,36 +328,53 @@ class ChessStates() :
         else :
             return scores[1] - scores[0]
         
-    def minmax(self,board,deph,maximizing_player,maximizing_color) :
-        if deph==0 : 
-            return None,self.evaluate(board,maximizing_color)
-        moves = self.generate_legal_moves(board,'b')
-        print(moves)
-        best_move = random.choice(moves)
-        if maximizing_player : 
-            max_eval = -inf 
-            for move in moves : 
-                old_board = board
-                self.changePieces2(move[1],move[0],board)
-                current_eval = self.minmax(board,deph-1,False,maximizing_color)[1]
-                board = old_board
-                if current_eval>max_eval :
-                    max_eval = current_eval
-                    best_move = move
-            return best_move , max_eval
-        else : 
-            min_eval = abs(inf) 
-            for move in moves : 
-                old_board = board
-                self.changePieces2(move[1],move[0],board)     
-                current_eval = self.minmax(board,deph-1,True,maximizing_color)[1]    
-                board = old_board
-                if current_eval < min_eval : 
-                    min_eval = current_eval 
-                    best_move = move
-            return best_move , min_eval
+    def is_in_check(self, board, player_color):
+        # Encuentra la posición del rey del jugador actual
+        king_pos = None
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                piece = board[i][j]
+                if piece == ('R' + player_color):
+                    king_pos = (i, j)
+                    break
+            if king_pos:
+                break
+        
+        if  king_pos == None:
+            return False  # No se encontró el rey, algo anda mal
 
-    
+        # Comprueba si alguna pieza enemiga puede atacar al rey
+        opponent_color = 'b' if player_color == 'n' else 'n'
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                piece = board[i][j]
+                if piece != '-' and piece[-1] == opponent_color:
+                    if self.verifiedPiece(piece, king_pos, (i, j),False ,board):
+                        return True
+        return False
+
+    def is_checkmate(self, board, player_color):
+        if not self.is_in_check(board, player_color):
+            return False
+        
+        # Genera todos los movimientos legales del jugador actual
+        legal_moves = self.generate_legal_moves(board, player_color)
+        
+        # Comprueba si existe al menos un movimiento legal que saque al rey del jaque
+        for move in legal_moves:
+            board_copy = [row[:] for row in board]
+            self.changePieces2(move[1], move[0], board_copy)
+            if not self.is_in_check(board_copy, player_color):
+                return False
+        
+        return True
+
+    def king_die(self,board,played) : 
+        
+        for file in board : 
+            if 'R'+played in file :
+                return False
+        return True
 
     
     def setBoard(self,board) : 
