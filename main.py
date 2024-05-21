@@ -4,6 +4,8 @@ import ChessStates
 import ChessItems
 import ChessEngine
 import time
+import tkinter as tk
+from tkinter import messagebox
 # Definir algunos colores
 BLANCO = (255, 255, 255)
 NEGRO = (0, 99, 147)
@@ -16,7 +18,7 @@ IMAGES = {}
 TURNO = True
 # Inicializar Pygame
 pygame.init()
-CurrentChessGame = ChessStates.ChessStates()
+#CurrentChessGame = ChessStates.ChessStates()
 #board =  CurrentChessGame.getBoard()
 # Crear la pantalla
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
@@ -110,10 +112,27 @@ def select_difficulty():
                 elif hard_button.collidepoint(evento.pos):
                     return 'dificil'
 
+def show_endgame_dialog(played):
+    root = tk.Tk()
+    root.withdraw()  # Ocultar la ventana principal de Tkinter
 
+    if played == 'n':
+        message = '¡Jugador Negro pierde! ¿Desea continuar o regresar al menú?'
+    else:
+        message = '¡Jugador Blanco pierde! ¿Desea continuar o regresar al menú?'
+
+    result = messagebox.askyesno("Fin del juego", message)
+    root.destroy()
+
+    if result:
+        return 'continue'
+    else:
+        return 'menu'
 def main():
+    CurrentChessGame = None
+    CurrentChessGame = ChessStates.ChessStates()
     global TURNO
-    global CurrentChessGame
+   # global CurrentChessGame
     loadImages()
     menu()
     difficulty = select_difficulty()
@@ -122,21 +141,34 @@ def main():
     piece = ""
     best = None
     ActiveGame = True
+    flag_dialog = False
     while True:
         #board_aux = CurrentChessGame.getBoard()
         #next_data = ChessEngine.ChessEngine().minmax(board_aux,1,True,'b')
         #print(next_data)
         played = 'b' if CurrentChessGame.getTurno() else 'n'
-      #  eval_cm = CurrentChessGame.is_checkmate([row[:] for row in CurrentChessGame.getBoard()],played)
-      #  print(eval_cm)
-        if (CurrentChessGame.king_die([row[:] for row in CurrentChessGame.getBoard()],played)) :
-            pantalla.fill(BLANCO)
-            if played == 'n':
-                draw_text('¡Jugador Negro pierde!', pygame.font.Font(None, 50), NEGRO, pantalla, ANCHO // 2 - 250, ALTO // 4)
-                
-            else:
-                draw_text('¡Jugador Blanco pierde!', pygame.font.Font(None, 50), NEGRO, pantalla, ANCHO // 2 - 250, ALTO // 4)
+        eval_cmw = ChessEngine.ChessEngine().is_checkmate([row[:] for row in CurrentChessGame.getBoard()],'b')
+        eval_cmb = ChessEngine.ChessEngine().is_checkmate([row[:] for row in CurrentChessGame.getBoard()],'n')
+        if (eval_cmw) : 
+            print("Pierden blancas")
+        elif(eval_cmb) :
+            print("Pierden negras")
 
+      #  print(eval_cm)
+        if (CurrentChessGame.king_die([row[:] for row in CurrentChessGame.getBoard()],played) and not flag_dialog) :
+            result = show_endgame_dialog(played)
+            #
+            if result == 'menu':
+
+                main()
+                
+                ActiveGame = False
+                break
+            else:
+                flag_dialog = True
+                #ActiveGame = True  # Continúa la partida actual
+                #continue
+            a ="""
             mouse_pos = pygame.mouse.get_pos()
             restart_button = draw_button('Reiniciar Juego', pygame.font.Font(None, 50), GRIS, pantalla, ANCHO // 2 - 150, ALTO // 2, 300, 50, NEGRO, mouse_pos)
             exit_button = draw_button('Salir', pygame.font.Font(None, 50), GRIS, pantalla, ANCHO // 2 - 150, ALTO // 2 + 100, 300, 50, NEGRO, mouse_pos)
@@ -155,7 +187,7 @@ def main():
                         
                     elif exit_button.collidepoint(evento.pos):
                         pygame.quit()
-                        sys.exit()
+                        sys.exit()"""
         if ActiveGame :
             if not CurrentChessGame.getTurno() :
                     board_aux = [row[:] for row in CurrentChessGame.getBoard()]
@@ -164,7 +196,7 @@ def main():
                     elif difficulty == 'intermedio' : 
                         best = ChessEngine.ChessEngine().best_first_search(board_aux,'n',2)
                     elif difficulty == 'dificil' : 
-                        best = ChessEngine.ChessEngine().minmax(board_aux,3,False,'b')
+                        best = ChessEngine.ChessEngine().minmax(board_aux,4,False,'b')
 
                     print(f'This is the best move : {best[0]}')
             if (CurrentChessGame.getTurno() ==False and best != None) : 
@@ -217,6 +249,7 @@ def main():
                     elif new_pos!= None and curr_pos!=None and not CurrentChessGame.verifiedPiece(piece,new_pos,curr_pos,board =  CurrentChessGame.getBoard()) :
                         curr_pos = None 
                         new_pos =None
+        
                     
                     
                     
@@ -225,6 +258,8 @@ def main():
 
             # Actualizar la pantalla
             pygame.display.flip()
+        else :
+            break
 
 if __name__ == "__main__":
     main()

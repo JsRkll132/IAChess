@@ -84,7 +84,7 @@ class ChessEngine () :
         elif (new_x, new_y) in [(curr_x - 1, curr_y - 1), (curr_x - 1, curr_y + 1)] and board[new_x][new_y][-1] == 'n':
             return True  # Captura en diagonal
         else:
-            print("Movimiento no válido para el peón blanco.")
+            #print("Movimiento no válido para el peón blanco.")
             return False
         
     def Tmove(self,curr_pos, new_pos,pType,board) : 
@@ -302,7 +302,7 @@ class ChessEngine () :
     # Implementación de las demás funciones como generate_legal_moves, verifiedPiece, etc.
    
     def minmax(self, board, depth, maximizing_player, maximizing_color, alpha=-float('inf'), beta=float('inf')):
-        if depth == 0 or self.is_checkmate(board=board,player_color=maximizing_color):
+        if depth == 0 or self.is_checkmate(board=board,player_color='b') or self.is_checkmate(board=board,player_color='n'):
             return None, self.evaluate(board, maximizing_color)
 
         if maximizing_player:

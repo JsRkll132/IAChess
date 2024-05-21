@@ -234,13 +234,13 @@ class ChessStates() :
     
         board[newpos[0]][newpos[1]] = board[currpos[0]][currpos[1]]
         board[currpos[0]][currpos[1]] = "-"
-        [ print(f'{k}\n') for k in board ]
+       # [ print(f'{k}\n') for k in board ]
 
     def move_piece(self,x, y,param_y = 100,param_x=100):
         fila = y // param_y
         columna = x // param_x
 
-        print(f'Moviendo pieza en la fila {fila} y columna {columna}')
+        #print(f'Moviendo pieza en la fila {fila} y columna {columna}')
         return fila,columna
     def changePieces (self,newpos,currpos) :
         if self.tablero[currpos[0]][currpos[1]] == 'Pb' and newpos[0] == 0  :
@@ -253,7 +253,7 @@ class ChessStates() :
              return
         self.tablero[newpos[0]][newpos[1]] = self.tablero[currpos[0]][currpos[1]]
         self.tablero[currpos[0]][currpos[1]] = "-"
-        [ print(f'{k}\n') for k in self.tablero ]
+      #  [ print(f'{k}\n') for k in self.tablero ]
 
     def count_legal_moves(self, board, player_color):
         legal_moves_count = 0
@@ -303,7 +303,7 @@ class ChessStates() :
                     moves_for_piece = self.generate_legal_moves_for_piece(board, position)
                     legal_moves.extend([(position, move) for move in moves_for_piece])
        # print(f'legal moves for {player_color}')
-        print(legal_moves)
+        #print(legal_moves)
         return legal_moves
 
     def evaluate_board(self, board):
