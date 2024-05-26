@@ -70,7 +70,7 @@ intermediate_radio.pack(pady=10)
 
 hard_radio = tk.Radiobutton(difficulty_frame, text="Difícil", variable=difficulty, value='dificil', font=("Terminal", 12), command=lambda: set_difficulty('dificil'))
 hard_radio.pack(pady=10)
-
+terminate = False
 # Cargar imágenes de piezas
 def load_images():
     pieces = {
@@ -191,11 +191,13 @@ def make_black_move():
         verified_end_game() 
 
 def verified_end_game():
-    if (CurrentChessGame.king_die(CurrentChessGame.getBoard(), 'b' if CurrentChessGame.getTurno() else 'n') or ChessEngine.ChessEngine().is_checkmate([row[:] for row in CurrentChessGame.getBoard()], 'b') or ChessEngine.ChessEngine().is_checkmate([row[:] for row in CurrentChessGame.getBoard()], 'n')):
+    global terminate
+    if (not terminate and CurrentChessGame.king_die(CurrentChessGame.getBoard(), 'b' if CurrentChessGame.getTurno() else 'n') or ChessEngine.ChessEngine().is_checkmate([row[:] for row in CurrentChessGame.getBoard()], 'b') or ChessEngine.ChessEngine().is_checkmate([row[:] for row in CurrentChessGame.getBoard()], 'n')):
         result = show_endgame_dialog('b' if CurrentChessGame.getTurno() else 'n')
-        if result == 'menu':
+        if result == 'menu' :
             reset_game()
         else:
+            terminate = True
             main_menu()
 
 def show_endgame_dialog(played):
@@ -215,6 +217,8 @@ def main_menu():
 
 def reset_game():
     global CurrentChessGame
+    global terminate
+    terminate = False
     CurrentChessGame = ChessStates.ChessStates()
     update_turn_label()
     draw_board()
