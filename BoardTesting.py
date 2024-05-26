@@ -24,6 +24,8 @@ board = [
             ]
 ce = ChessEngine.ChessEngine()
 new_pos=ce.minmax(board=board,depth=6,maximizing_player=True,maximizing_color='b')
-print(new_pos)
-print(ce.is_checkmate(board,'n'))
-[print(f'{i}\n') for i in board]
+#valid_moves = ce.generate_legal_moves(sample_board,'n')
+print(valid_moves)
+#print(new_pos)
+#print(ce.is_checkmate(board,'n'))
+#[print(f'{i}\n') for i in board]

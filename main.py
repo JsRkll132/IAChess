@@ -28,9 +28,9 @@ def loadImages() :
     blackPieces = sorted(ChessItems.Chessitems().getBlackItems())
     whitePieces = sorted(ChessItems.Chessitems().getWhiteItems())
     for i in blackPieces : 
-        IMAGES[i] = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\\blackpieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))
+        IMAGES[i] = pygame.transform.scale(pygame.image.load('GameView\Images\\blackpieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))
     for i in whitePieces : 
-        IMAGES[i] = pygame.transform.scale(pygame.image.load('ChessGame\GameView\Images\\whitepieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))    
+        IMAGES[i] = pygame.transform.scale(pygame.image.load('GameView\Images\\whitepieces\\'+i+'.png'),(TAM_CUADRO, TAM_CUADRO))    
 
 
 def draw_board( board) :
@@ -117,9 +117,9 @@ def show_endgame_dialog(played):
     root.withdraw()  # Ocultar la ventana principal de Tkinter
 
     if played == 'n':
-        message = '¡Jugador Negro pierde! ¿Desea continuar o regresar al menú?'
+        message = '¡Jugador Negro pierde! ¿Desea continuar(Si) o regresar al menú(No)?'
     else:
-        message = '¡Jugador Blanco pierde! ¿Desea continuar o regresar al menú?'
+        message = '¡Jugador Blanco pierde! ¿Desea continuar(Si) o regresar al menú(No)'
 
     result = messagebox.askyesno("Fin del juego", message)
     root.destroy()
@@ -155,7 +155,7 @@ def main():
             print("Pierden negras")
 
       #  print(eval_cm)
-        if (CurrentChessGame.king_die([row[:] for row in CurrentChessGame.getBoard()],played) and not flag_dialog) :
+        if (CurrentChessGame.king_die([row[:] for row in CurrentChessGame.getBoard()],played) or eval_cmw or eval_cmb and not flag_dialog) :
             result = show_endgame_dialog(played)
             #
             if result == 'menu':
