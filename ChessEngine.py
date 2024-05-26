@@ -308,7 +308,7 @@ class ChessEngine () :
         if maximizing_player:
             moves = self.generate_legal_moves(board, 'b')
             max_eval = -float('inf')
-            best_move = None
+            best_move = random.choice(moves)
             for move in moves:
                 board_copy = [row[:] for row in board]
                 self.changePieces2(move[1], move[0], board_copy)
@@ -323,7 +323,7 @@ class ChessEngine () :
         else:
             moves = self.generate_legal_moves(board, 'n')
             min_eval = float('inf')
-            best_move = None
+            best_move = random.choice(moves)
             for move in moves:
                 board_copy = [row[:] for row in board]
                 self.changePieces2(move[1], move[0], board_copy)
@@ -357,7 +357,7 @@ class ChessEngine () :
             score = evaluate_board_for_best_first(board_copy)  # Evaluamos el tablero resultante
             heapq.heappush(priority_queue, (-score, move, board_copy))  # Añadimos a la cola de prioridad con score negativo para max heap
 
-        best_move = None
+        best_move = random.choice(initial_moves)
         best_score = -inf if player_color == 'n' else inf
 
         # Buscamos el mejor movimiento en función de la evaluación
